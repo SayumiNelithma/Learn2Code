@@ -64,5 +64,13 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/counts")
+    public Map<String, Integer> getFollowCounts(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        int followers = followService.getFollowerCount(user);
+        int following = followService.getFollowingCount(user);
+        return Map.of("followers", followers, "following", following);
+    }
+
     
 }
