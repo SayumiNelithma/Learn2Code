@@ -27,5 +27,8 @@ public class FollowController {
     @Autowired
     private FollowService followService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     
 }
