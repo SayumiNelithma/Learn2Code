@@ -37,5 +37,10 @@ public class FollowController {
         return followService.requestFollow(follower, following);
     }
 
+    @PostMapping("/accept/{followId}")
+    public Follow acceptFollowRequest(@PathVariable Long followId) {
+        return followService.acceptFollow(followId);
+    }
+
     
 }
