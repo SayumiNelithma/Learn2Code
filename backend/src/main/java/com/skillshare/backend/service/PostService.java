@@ -69,3 +69,80 @@ public class PostService {
     
         return postRepository.save(post);
     }
+
+    public Post getPostByIdForUser(Long postId, String email) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("Unauthorized access to post");
+        }
+
+        return post;
+    }
+
+    public void deletePostByIdAndUser(Long postId, String email) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("Unauthorized to delete this post");
+        }
+
+        // Delete associated media files from disk
+        for (String mediaPath : post.getMediaPaths()) {
+            try {
+                Path filePath = Paths.get("src/main/resources/static" + mediaPath);
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                e.printStackTrace(); // Optional: log or handle
+            }
+        }
+
+        postRepository.delete(post);
+    }
+
+    // public Post toggleLike(Long postId, String userEmail) {
+    //     Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+    //     User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+    
+    //     if (post.getLikedBy().contains(user)) {
+    //         post.getLikedBy().remove(user);
+    //     } else {
+    //         post.getLikedBy().add(user);
+    //     }
+    
+    //     return postRepository.save(post);
+    // }
+    public Post toggleLike(Long postId, String userEmail) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new RuntimeException("Post not found"));
+        User liker = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        User postOwner = post.getUser();
+    
+        boolean alreadyLiked = post.getLikedBy().contains(liker);
+    
+        if (alreadyLiked) {
+            post.getLikedBy().remove(liker);
+        } else {
+            post.getLikedBy().add(liker);
+    
+            // ✅ Send notification only if not liking own post
+            if (!postOwner.getEmail().equals(userEmail)) {
+                String message = liker.getUsername() + " liked your post: " + post.getTitle();
+                notificationService.createNotification(postOwner, message);
+            }
+        }
+    
+        return postRepository.save(post);
+    }
+    
+    public boolean isLikedByUser(Long postId, String userEmail) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+        return post.getLikedBy().contains(user);
+    }
+    
+    
+}

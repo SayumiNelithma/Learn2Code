@@ -24,5 +24,8 @@ import com.skillshare.backend.service.FollowService;
 
 public class FollowController {
 
+    @Autowired
+    private FollowService followService;
+
     
 }
