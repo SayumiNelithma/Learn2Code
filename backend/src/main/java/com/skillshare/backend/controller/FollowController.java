@@ -42,5 +42,11 @@ public class FollowController {
         return followService.acceptFollow(followId);
     }
 
+    @GetMapping("/requests")
+    public List<Follow> getPendingRequests(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        return followService.getPendingRequests(user);
+    }
+
     
 }
