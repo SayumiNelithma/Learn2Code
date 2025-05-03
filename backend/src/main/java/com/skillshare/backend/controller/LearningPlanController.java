@@ -15,6 +15,9 @@ import com.skillshare.backend.entity.User;
 import com.skillshare.backend.repository.UserRepository;
 import com.skillshare.backend.service.LearningPlanService;
 
+//Add annotations
+@RestController
+@RequestMapping("/api/learning-plans")
 
 public class LearningPlanController {
     
