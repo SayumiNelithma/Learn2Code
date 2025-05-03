@@ -23,6 +23,14 @@ public class LearningPlanController {
     @Autowired
     private LearningPlanService planService;
 
-    
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping
+    public LearningPlan createPlan(@RequestBody LearningPlan plan, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        plan.setUser(user);
+        return planService.save(plan);
+    }
     
 }
