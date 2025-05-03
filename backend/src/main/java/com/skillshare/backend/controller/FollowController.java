@@ -18,3 +18,11 @@ import com.skillshare.backend.entity.FollowStatus;
 import com.skillshare.backend.entity.User;
 import com.skillshare.backend.repository.UserRepository;
 import com.skillshare.backend.service.FollowService;
+
+@RestController
+@RequestMapping("/api/follow")
+
+public class FollowController {
+
+    
+}
