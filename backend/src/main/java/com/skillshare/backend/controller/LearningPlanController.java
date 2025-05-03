@@ -23,6 +23,25 @@ public class LearningPlanController {
     @Autowired
     private LearningPlanService planService;
 
-    
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping
+    public LearningPlan createPlan(@RequestBody LearningPlan plan, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        plan.setUser(user);
+        return planService.save(plan);
+    }
+
+    @GetMapping("/my")
+    public List<LearningPlan> myPlans(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        return planService.getPlansByUser(user);
+    }
+
+    @GetMapping("/all")
+    public List<LearningPlan> getAllPlans() {
+        return planService.getAllPlans();
+    }
     
 }
