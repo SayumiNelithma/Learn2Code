@@ -30,7 +30,7 @@ public class FollowController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping
+    @PostMapping("/{userId}")
     public Follow sendFollowRequest(@PathVariable Long userId, Principal principal) {
         User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
         User following = userRepository.findById(userId).orElseThrow();
