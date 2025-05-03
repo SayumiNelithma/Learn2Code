@@ -20,5 +20,9 @@ import com.skillshare.backend.service.LearningPlanService;
 @RequestMapping("/api/learning-plans")
 
 public class LearningPlanController {
+    @Autowired
+    private LearningPlanService planService;
+
+    
     
 }
