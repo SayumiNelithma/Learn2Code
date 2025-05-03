@@ -1,5 +1,8 @@
 package com.skillshare.backend.entity;
 
-public class FollowStatus {
-    
+
+
+public enum FollowStatus {
+    PENDING,
+    ACCEPTED
 }
