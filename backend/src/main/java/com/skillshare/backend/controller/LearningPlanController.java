@@ -43,5 +43,15 @@ public class LearningPlanController {
     public List<LearningPlan> getAllPlans() {
         return planService.getAllPlans();
     }
+
+    @DeleteMapping("/{id}")
+    public void deletePlan(@PathVariable Long id, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        LearningPlan plan = planService.getPlanById(id);
+        if (!plan.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not authorized to delete this plan.");
+        }
+        planService.deleteById(id);
+}
     
 }
