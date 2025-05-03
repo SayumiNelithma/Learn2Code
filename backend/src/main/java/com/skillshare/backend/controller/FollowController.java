@@ -48,5 +48,13 @@ public class FollowController {
         return followService.getPendingRequests(user);
     }
 
+    @GetMapping("/status/{userId}")
+    public Map<String, String> getFollowStatus(@PathVariable Long userId, Principal principal) {
+        User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
+        User following = userRepository.findById(userId).orElseThrow();
+        FollowStatus status = followService.getStatus(follower, following);
+        return Map.of("status", status != null ? status.name() : "NONE");
+    }
+
     
 }
