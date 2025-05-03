@@ -35,3 +35,55 @@ import com.skillshare.backend.repository.UserRepository;
 import com.skillshare.backend.service.FollowService;
 import com.skillshare.backend.service.PostService;
 // import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/posts")
+public class PostController {
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private FollowService followService;
+
+    @Autowired
+    private PostRepository postRepository;
+
+
+    @PostMapping
+    @SuppressWarnings("CallToPrintStackTrace")
+    public ResponseEntity<Post> createPost(@RequestPart("title") String title,
+                                           @RequestPart("description") String description,
+                                           @RequestPart("files") MultipartFile[] files,
+                                           Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+
+        List<String> filePaths = new ArrayList<>();
+        for (MultipartFile file : files) {
+            try {
+                String filename = System.currentTimeMillis() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+                Path path = Paths.get(uploadDir, filename);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                filePaths.add("/uploads/" + filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Post post = new Post();
+        post.setTitle(title);
+        post.setDescription(description);
+        post.setMediaPaths(filePaths);
+        post.setUser(user);
+
+        return ResponseEntity.ok(postService.save(post));
+    }
