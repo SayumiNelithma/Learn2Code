@@ -56,5 +56,13 @@ public class FollowController {
         return Map.of("status", status != null ? status.name() : "NONE");
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> unfollow(@PathVariable Long userId, Principal principal) {
+        User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
+        User following = userRepository.findById(userId).orElseThrow();
+        followService.unfollow(follower, following);
+        return ResponseEntity.ok().build();
+    }
+
     
 }
