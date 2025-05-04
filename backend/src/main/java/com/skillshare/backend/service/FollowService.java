@@ -41,4 +41,10 @@ public class FollowService {
         return null;
     }
 
+    public Follow acceptFollow(Long followId) {
+        Follow follow = followRepository.findById(followId).orElseThrow();
+        follow.setStatus(FollowStatus.ACCEPTED);
+        return followRepository.save(follow);
+    }
+
 }
