@@ -60,4 +60,9 @@ public class FollowService {
                 .map(Follow::getStatus).orElse(null);
     }
 
+    public void unfollow(User follower, User following) {
+        followRepository.findByFollowerAndFollowing(follower, following)
+            .ifPresent(followRepository::delete);
+    }
+
 }
