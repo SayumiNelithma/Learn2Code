@@ -1,4 +1,4 @@
-package com.skillshare.backend.controller;
+package com.skillshare.backend.controller; 
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.skillshare.backend.repository.UserRepository;
 import com.skillshare.backend.service.NotificationService;
 
 @RestController
-@RequestMapping("/api/notifications")
+@RequestMapping("/api/notifications")       //Notification base path
 public class NotificationController {
 
     @Autowired
