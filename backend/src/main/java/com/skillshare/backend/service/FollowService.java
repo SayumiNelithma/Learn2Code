@@ -47,4 +47,17 @@ public class FollowService {
         return followRepository.save(follow);
     }
 
+    public List<Follow> getAcceptedFollowing(User user) {
+        return followRepository.findByFollowerAndStatus(user, FollowStatus.ACCEPTED);
+    }
+
+    public List<Follow> getPendingRequests(User user) {
+        return followRepository.findByFollowingAndStatus(user, FollowStatus.PENDING);
+    }
+
+    public FollowStatus getStatus(User follower, User following) {
+        return followRepository.findByFollowerAndFollowing(follower, following)
+                .map(Follow::getStatus).orElse(null);
+    }
+
 }
