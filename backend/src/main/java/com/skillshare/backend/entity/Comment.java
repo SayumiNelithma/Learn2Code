@@ -1,14 +1,27 @@
 package com.skillshare.backend.entity;
 
-import java.time.LocalDateTime;
+// Java time package for handling date and time
+import java.time.LocalDateTime;  
+// Represents date and time without a time-zone, used for fields like createdAt or updatedAt.
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Data;
+// Jakarta Persistence API (JPA) annotations for ORM mapping
+import jakarta.persistence.Entity;  
+// Specifies that the class is an entity and is mapped to a database table.
+import jakarta.persistence.GeneratedValue;  
+// Indicates that the value of the annotated field will be generated automatically.
+import jakarta.persistence.GenerationType;  
+// Specifies the generation strategies for primary keys (e.g., AUTO, IDENTITY).
+import jakarta.persistence.Id;  
+// Marks the field as a primary key.
+import jakarta.persistence.ManyToOne;  
+// Defines a many-to-one relationship between entities.
+import jakarta.persistence.Table;  
+// Specifies the name of the database table to which the entity is mapped.
+
+// Lombok annotation to reduce boilerplate code
+import lombok.Data;  
+// Generates getters, setters, toString(), equals(), hashCode(), and other utility methods.
+
 
 @Data
 @Entity
