@@ -65,4 +65,16 @@ public class FollowService {
             .ifPresent(followRepository::delete);
     }
 
+    public int getFollowerCount(User user) {
+        return (int) followRepository.findAll().stream()
+                .filter(f -> f.getFollowing().equals(user) && f.getStatus() == FollowStatus.ACCEPTED)
+                .count();
+    }
+    
+    public int getFollowingCount(User user) {
+        return (int) followRepository.findAll().stream()
+                .filter(f -> f.getFollower().equals(user) && f.getStatus() == FollowStatus.ACCEPTED)
+                .count();
+    }
+
 }
