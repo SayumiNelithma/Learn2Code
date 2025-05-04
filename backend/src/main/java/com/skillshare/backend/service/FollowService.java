@@ -30,4 +30,15 @@ public class FollowService {
         return followRepository.findByFollower(follower);
     }
 
+    public Follow requestFollow(User follower, User following) {
+        if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
+            Follow follow = new Follow();
+            follow.setFollower(follower);
+            follow.setFollowing(following);
+            follow.setStatus(FollowStatus.PENDING);
+            return followRepository.save(follow);
+        }
+        return null;
+    }
+
 }
