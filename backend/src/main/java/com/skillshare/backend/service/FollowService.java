@@ -14,7 +14,7 @@ import com.skillshare.backend.repository.FollowRepository;
 public class FollowService {
 
     @Autowired
-    private FOllowRepository followRepository;
+    private FollowRepository followRepository;
 
     public Follow follow(User follower, User following) {
         if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
@@ -29,16 +29,15 @@ public class FollowService {
     public List<Follow> getFollowing(User follower) {
         return followRepository.findByFollower(follower);
     }
-
     public Follow requestFollow(User follower, User following) {
-        if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
-            Follow follow = new Follow();
-            follow.setFollower(follower);
-            follow.setFollowing(following);
-            follow.setStatus(FollowStatus.PENDING);
-            return followRepository.save(follow);
-        }
-        return null;
+    if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
+        Follow follow = new Follow();
+        follow.setFollower(follower);
+        follow.setFollowing(following);
+        follow.setStatus(FollowStatus.PENDING);
+        return followRepository.save(follow);
+    }
+    return null;
     }
 
     public Follow acceptFollow(Long followId) {
@@ -59,12 +58,10 @@ public class FollowService {
         return followRepository.findByFollowerAndFollowing(follower, following)
                 .map(Follow::getStatus).orElse(null);
     }
-
     public void unfollow(User follower, User following) {
         followRepository.findByFollowerAndFollowing(follower, following)
             .ifPresent(followRepository::delete);
     }
-
     public int getFollowerCount(User user) {
         return (int) followRepository.findAll().stream()
                 .filter(f -> f.getFollowing().equals(user) && f.getStatus() == FollowStatus.ACCEPTED)
@@ -76,5 +73,6 @@ public class FollowService {
                 .filter(f -> f.getFollower().equals(user) && f.getStatus() == FollowStatus.ACCEPTED)
                 .count();
     }
-
+    
+    
 }
