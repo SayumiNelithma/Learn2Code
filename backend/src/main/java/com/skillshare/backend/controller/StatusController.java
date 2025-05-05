@@ -25,9 +25,9 @@ import com.skillshare.backend.repository.StatusRepository;
 import com.skillshare.backend.repository.UserRepository;
 
 @RestController
-@RequestMapping("api/status")
-
+@RequestMapping("/api/status")
 public class StatusController {
+
     @Autowired
     private StatusRepository statusRepo;
     @Autowired
