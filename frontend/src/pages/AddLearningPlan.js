@@ -35,5 +35,20 @@ export default function AddLearningPlan() {
     });
   
     const navigate = useNavigate();
+
+    const handleSubmit = async () => {
+        const today = new Date().toISOString().split('T')[0];
+    
+        if (!form.title || !form.topics || !form.resources || !form.targetDate) {
+          toast.error('Please fill out all fields');
+          return;
+        }
+    
+        if (form.targetDate < today) {
+          toast.error('Target date cannot be in the past.');
+          return;
+        }
+    
+    
   
   
