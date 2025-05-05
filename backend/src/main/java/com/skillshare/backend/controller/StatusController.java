@@ -37,4 +37,35 @@ public class StatusController {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadStatus(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("caption") String caption,
+            @RequestParam("durationHours") int durationHours,
+            @RequestHeader("Authorization") String authHeader
+    ) throws Exception {
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        User user = userRepo.findByEmail(email).orElseThrow();
+
+        String uniqueName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fullPath = uploadDir + File.separator + uniqueName;
+        String filePath = "/uploads/" + uniqueName;
+
+        // Ensure the directory exists
+        new File(uploadDir).mkdirs();
+
+        file.transferTo(new File(fullPath));
+
+        Status status = new Status();
+        status.setUser(user);
+        status.setCaption(caption);
+        status.setImagePath(filePath);
+        status.setCreatedAt(LocalDateTime.now());
+        status.setExpiresAt(LocalDateTime.now().plusHours(durationHours));
+
+        statusRepo.save(status);
+
+        return ResponseEntity.ok("Status uploaded");
+    }
 }
