@@ -20,3 +20,12 @@ public class LearningPlanService {
     public LearningPlan save(LearningPlan plan) {
         return learningPlanRepository.save(plan);
     }
+
+    public List<LearningPlan> getAllPlans() {
+        return learningPlanRepository.findAll();
+    }
+
+    public List<LearningPlan> getPlansByUser(User user) {
+        return learningPlanRepository.findByUser(user);
+    }
+
