@@ -30,5 +30,47 @@ public class FollowController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/{userId}")
+    public Follow sendFollowRequest(@PathVariable Long userId, Principal principal) {
+        User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
+        User following = userRepository.findById(userId).orElseThrow();
+        return followService.requestFollow(follower, following);
+    }
+
+    @PostMapping("/accept/{followId}")
+    public Follow acceptFollowRequest(@PathVariable Long followId) {
+        return followService.acceptFollow(followId);
+    }
+
+    @GetMapping("/requests")
+    public List<Follow> getPendingRequests(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        return followService.getPendingRequests(user);
+    }
+
+    @GetMapping("/status/{userId}")
+    public Map<String, String> getFollowStatus(@PathVariable Long userId, Principal principal) {
+        User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
+        User following = userRepository.findById(userId).orElseThrow();
+        FollowStatus status = followService.getStatus(follower, following);
+        return Map.of("status", status != null ? status.name() : "NONE");
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> unfollow(@PathVariable Long userId, Principal principal) {
+        User follower = userRepository.findByEmail(principal.getName()).orElseThrow();
+        User following = userRepository.findById(userId).orElseThrow();
+        followService.unfollow(follower, following);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/counts")
+    public Map<String, Integer> getFollowCounts(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+        int followers = followService.getFollowerCount(user);
+        int following = followService.getFollowingCount(user);
+        return Map.of("followers", followers, "following", following);
+    }
+
     
 }

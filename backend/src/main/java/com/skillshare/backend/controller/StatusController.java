@@ -23,3 +23,94 @@ import com.skillshare.backend.entity.Status;
 import com.skillshare.backend.entity.User;
 import com.skillshare.backend.repository.StatusRepository;
 import com.skillshare.backend.repository.UserRepository;
+
+@RestController
+@RequestMapping("/api/status")
+public class StatusController {
+
+    @Autowired
+    private StatusRepository statusRepo;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadStatus(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("caption") String caption,
+            @RequestParam("durationHours") int durationHours,
+            @RequestHeader("Authorization") String authHeader
+    ) throws Exception {
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        User user = userRepo.findByEmail(email).orElseThrow();
+
+        String uniqueName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fullPath = uploadDir + File.separator + uniqueName;
+        String filePath = "/uploads/" + uniqueName;
+
+        // Ensure the directory exists
+        new File(uploadDir).mkdirs();
+
+        file.transferTo(new File(fullPath));
+
+        Status status = new Status();
+        status.setUser(user);
+        status.setCaption(caption);
+        status.setImagePath(filePath);
+        status.setCreatedAt(LocalDateTime.now());
+        status.setExpiresAt(LocalDateTime.now().plusHours(durationHours));
+
+        statusRepo.save(status);
+
+        return ResponseEntity.ok("Status uploaded");
+    }
+
+    @GetMapping
+    public List<Status> getAllActiveStatuses() {
+        return statusRepo.findByExpiresAtAfter(LocalDateTime.now());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStatus(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        Status status = statusRepo.findById(id).orElseThrow();
+        if (!status.getUser().getEmail().equals(email)) {
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+        statusRepo.deleteById(id);
+        return ResponseEntity.ok("Deleted");
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> editStatus(
+            @PathVariable Long id,
+            @RequestParam("caption") String caption,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestHeader("Authorization") String authHeader) throws Exception {
+
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        Status status = statusRepo.findById(id).orElseThrow();
+
+        if (!status.getUser().getEmail().equals(email)) {
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+
+        status.setCaption(caption);
+
+        if (file != null && !file.isEmpty()) {
+            String uniqueName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String fullPath = uploadDir + File.separator + uniqueName;
+            String filePath = "/uploads/" + uniqueName;
+
+            file.transferTo(new File(fullPath));
+            status.setImagePath(filePath);
+        }
+
+        statusRepo.save(status);
+        return ResponseEntity.ok("Status updated");
+    }
+}
