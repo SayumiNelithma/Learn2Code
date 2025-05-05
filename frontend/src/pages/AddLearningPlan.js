@@ -23,3 +23,17 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import axios from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+
+export default function AddLearningPlan() {
+    const [form, setForm] = useState({
+      title: '',
+      topics: '',
+      resources: '',
+      targetDate: '',
+      progress: 'Not Started'
+    });
+  
+    const navigate = useNavigate();
+  
+  
