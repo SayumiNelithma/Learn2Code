@@ -84,4 +84,33 @@ public class StatusController {
         statusRepo.deleteById(id);
         return ResponseEntity.ok("Deleted");
     }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<String> editStatus(
+            @PathVariable Long id,
+            @RequestParam("caption") String caption,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestHeader("Authorization") String authHeader) throws Exception {
+
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        Status status = statusRepo.findById(id).orElseThrow();
+
+        if (!status.getUser().getEmail().equals(email)) {
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+
+        status.setCaption(caption);
+
+        if (file != null && !file.isEmpty()) {
+            String uniqueName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String fullPath = uploadDir + File.separator + uniqueName;
+            String filePath = "/uploads/" + uniqueName;
+
+            file.transferTo(new File(fullPath));
+            status.setImagePath(filePath);
+        }
+
+        statusRepo.save(status);
+        return ResponseEntity.ok("Status updated");
+    }
 }
