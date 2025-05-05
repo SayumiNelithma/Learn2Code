@@ -29,3 +29,13 @@ public class LearningPlanService {
         return learningPlanRepository.findByUser(user);
     }
 
+    public void deleteById(Long id) {
+        learningPlanRepository.deleteById(id);
+    }
+    public LearningPlan getPlanById(Long id) {
+        return learningPlanRepository.findById(id).orElseThrow();
+    }
+    
+    
+}
+
