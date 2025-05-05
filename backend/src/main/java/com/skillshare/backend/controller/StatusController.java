@@ -68,4 +68,20 @@ public class StatusController {
 
         return ResponseEntity.ok("Status uploaded");
     }
+
+    @GetMapping
+    public List<Status> getAllActiveStatuses() {
+        return statusRepo.findByExpiresAtAfter(LocalDateTime.now());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStatus(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String email = jwtUtil.extractEmail(authHeader.substring(7));
+        Status status = statusRepo.findById(id).orElseThrow();
+        if (!status.getUser().getEmail().equals(email)) {
+            return ResponseEntity.status(403).body("Forbidden");
+        }
+        statusRepo.deleteById(id);
+        return ResponseEntity.ok("Deleted");
+    }
 }
