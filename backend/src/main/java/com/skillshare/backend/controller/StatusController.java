@@ -23,3 +23,18 @@ import com.skillshare.backend.entity.Status;
 import com.skillshare.backend.entity.User;
 import com.skillshare.backend.repository.StatusRepository;
 import com.skillshare.backend.repository.UserRepository;
+
+@RestController
+@RequestMapping("api/status")
+
+public class StatusController {
+    @Autowired
+    private StatusRepository statusRepo;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+}
