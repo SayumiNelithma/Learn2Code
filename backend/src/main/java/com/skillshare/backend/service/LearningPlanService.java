@@ -11,6 +11,12 @@ import com.skillshare.backend.entity.User;
 import com.skillshare.backend.repository.LearningPlanRepository;
 
 
+@Service
 public class LearningPlanService {
-    
-}
+
+    @Autowired
+    private LearningPlanRepository learningPlanRepository;
+
+    public LearningPlan save(LearningPlan plan) {
+        return learningPlanRepository.save(plan);
+    }
