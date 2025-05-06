@@ -93,6 +93,15 @@ export default function InstagramHomeFeed() {
     });
   };
 
+  const handleDelete = (commentId, postId) => {
+    axios.delete(`/comments/${commentId}`).then(() => {
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId].filter((c) => c.id !== commentId),
+      }));
+    });
+  };
+
   return (
     <Box>
       <Leftsidebar />
