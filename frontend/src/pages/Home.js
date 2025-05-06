@@ -1,10 +1,9 @@
 import React from 'react'
+import Leftsidebar from "../components/homepage/Leftsidebar";
 
 const Home = () => {
   return (
-    <div>
-      
-    </div>
+    <Leftsidebar />
   )
 }
 
