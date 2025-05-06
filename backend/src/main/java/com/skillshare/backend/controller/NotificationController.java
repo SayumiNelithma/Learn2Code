@@ -1,51 +1,23 @@
-package com.skillshare.backend.controller; 
+package com.skillshare.backend.controller;
 
-// Importing Java utility classes
-import java.util.List;  
-// Used for handling lists, such as returning a list of notifications.
+import java.util.List;
 
-// Spring framework annotations and utilities
-import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// Enables automatic dependency injection for required beans.
-import org.springframework.http.ResponseEntity;  
-
-// Used to represent the whole HTTP response, including status, headers, and body.
-import org.springframework.web.bind.annotation.GetMapping;  
-
-// Maps HTTP GET requests onto specific handler methods.
-import org.springframework.web.bind.annotation.PutMapping;  
-
-// Maps HTTP PUT requests onto specific handler methods.
-import org.springframework.web.bind.annotation.RequestHeader;  
-
-// Binds method parameters to HTTP request headers.
-import org.springframework.web.bind.annotation.RequestMapping; 
-
-// Maps web requests to Spring controller classes or methods.
-import org.springframework.web.bind.annotation.RestController;  
-
-// Marks this class as a RESTful web service controller in Spring.
-
-// Application-specific imports
-import com.skillshare.backend.config.JwtUtil;  
-
-// Utility class for handling JWT token operations like parsing and validation.
-import com.skillshare.backend.entity.Notification;  
-
-// Represents the Notification entity, typically mapped to a database table.
-import com.skillshare.backend.entity.User;  
-
-// Represents the User entity, containing user-related data.
-import com.skillshare.backend.repository.UserRepository;  
-
-// Interface for accessing User data from the database.
-import com.skillshare.backend.service.NotificationService;  
-// Service class for business logic related to notifications.
-
+import com.skillshare.backend.config.JwtUtil;
+import com.skillshare.backend.entity.Notification;
+import com.skillshare.backend.entity.User;
+import com.skillshare.backend.repository.UserRepository;
+import com.skillshare.backend.service.NotificationService;
 
 @RestController
-@RequestMapping("/api/notifications")       //Notification base path
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
     @Autowired

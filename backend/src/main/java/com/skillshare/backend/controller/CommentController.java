@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.skillshare.backend.entity.Comment;
+import com.skillshare.backend.entity.Post;
+import com.skillshare.backend.entity.User;
+import com.skillshare.backend.repository.PostRepository;
+import com.skillshare.backend.repository.UserRepository;
+import com.skillshare.backend.service.CommentService;
+
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {

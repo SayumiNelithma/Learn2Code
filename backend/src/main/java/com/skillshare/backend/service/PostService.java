@@ -69,7 +69,15 @@ public class PostService {
     
         return postRepository.save(post);
     }
+    
 
+    
+    
+    
+    
+    
+    
+    
     public Post getPostByIdForUser(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
