@@ -22,8 +22,8 @@ import {
     Chip,
   } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";  //Updating profile details
+import DeleteIcon from "@mui/icons-material/Delete";  //delete user profile 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
