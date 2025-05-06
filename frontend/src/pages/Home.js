@@ -41,6 +41,24 @@ import RightSidebar from "../components/homepage/Rightsidebar";
 import RenderStatusBar from "../components/homepage/RenderStatusBar";
 
 export default function InstagramHomeFeed() {
+  const [comments, setComments] = useState({});
+  const [newCommentText, setNewCommentText] = useState({});
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [likeStatus, setLikeStatus] = useState({});
+  const [allUsers, setAllUsers] = useState([]);
+  const [followStatus, setFollowStatus] = useState({});
+  const [activeTab, setActiveTab] = useState("following");
+  const BASE_URL = "http://localhost:9090";
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [statuses, setStatuses] = useState([]);
+  const [openStatus, setOpenStatus] = useState(null);
+  const handleOpenStatus = (status) => setOpenStatus(status);
+  const handleCloseStatus = () => setOpenStatus(null);
+  const [editingStatus, setEditingStatus] = useState(null);
+
   useEffect(() => {
     loadPosts();
   }, [activeTab]);
@@ -80,10 +98,101 @@ export default function InstagramHomeFeed() {
     });
   };
 
-  return (
-    <Box>
-      <Leftsidebar />
+  const handleCommentSubmit = (postId) => {
+    const content = newCommentText[postId];
+    if (!content) return;
 
+    axios.post(`/comments/${postId}`, { content }).then((res) => {
+      setComments((prev) => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), res.data],
+      }));
+      setNewCommentText((prev) => ({ ...prev, [postId]: "" }));
+    });
+  };
+
+  const handleDelete = (commentId, postId) => {
+    axios.delete(`/comments/${commentId}`).then(() => {
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId].filter((c) => c.id !== commentId),
+      }));
+    });
+  };
+
+  const handleEdit = (comment) => {
+    setEditCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleSaveEdit = (commentId, postId) => {
+    axios
+      .put(`/comments/${commentId}`, { content: editContent })
+      .then((res) => {
+        setComments((prev) => ({
+          ...prev,
+          [postId]: prev[postId].map((c) =>
+            c.id === commentId ? res.data : c
+          ),
+        }));
+        setEditCommentId(null);
+        setEditContent("");
+      });
+  };
+
+  const toggleLike = (postId) => {
+    axios.post(`/posts/${postId}/like`).then(() => {
+      axios.get(`/posts/${postId}/like-status`).then((res) => {
+        setLikeStatus((prev) => ({ ...prev, [postId]: res.data }));
+      });
+    });
+  };
+
+  const handleFollowRequest = (userId) => {
+    axios.post(`/follow/${userId}`).then(() => {
+      setFollowStatus((prev) => ({ ...prev, [userId]: "PENDING" }));
+    });
+  };
+
+  const handleUnfollow = (userId) => {
+    axios.delete(`/follow/${userId}`).then(() => {
+      setFollowStatus((prev) => ({ ...prev, [userId]: "NONE" }));
+    });
+  };
+
+  useEffect(() => {
+    loadStatuses();
+  }, []);
+
+  const loadStatuses = () => {
+    axios.get("/status").then((res) => setStatuses(res.data));
+  };
+
+  const handleDeleteStatus = (id) => {
+    axios.delete(`/status/${id}`).then(() => loadStatuses());
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: "100vh",
+      }}
+    >
+      <StatusViewer
+        status={editingStatus || openStatus}
+        onClose={() => {
+          setOpenStatus(null);
+          setEditingStatus(null);
+        }}
+        duration={5000}
+        refreshStatuses={loadStatuses}
+        isEditing={!!editingStatus}
+      />
+
+      {/* Left Sidebar */}
+      <Leftsidebar />
       {/* Main Content */}
       <Box
         sx={{ flex: 1, maxWidth: 950, mx: "auto", my: 2, p: 2, width: "100%" }}
@@ -382,6 +491,7 @@ export default function InstagramHomeFeed() {
         </Box>
       </Box>
 
+      {/* Right Sidebar */}
       <RightSidebar
         user={user}
         allUsers={allUsers}
