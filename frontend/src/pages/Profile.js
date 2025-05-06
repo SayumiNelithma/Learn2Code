@@ -34,16 +34,16 @@ import Leftsidebar from "../components/homepage/Leftsidebar";
 import StatusUpload from "../components/StatusUpload";
 
 export default function Profile() {
-  const [posts, setPosts] = useState([]);
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [followRequests, setFollowRequests] = useState([]);
-  const navigate = useNavigate();
-  const BASE_URL = "http://localhost:9090";
-  const [statuses, setStatuses] = useState([]);
-  const [followCounts, setFollowCounts] = useState({
-    followers: 0,
-    following: 0,
-  });
+    const [posts, setPosts] = useState([]);
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+    const [followRequests, setFollowRequests] = useState([]);
+    const navigate = useNavigate();
+    const BASE_URL = "http://localhost:9090";
+    const [statuses, setStatuses] = useState([]);
+    const [followCounts, setFollowCounts] = useState({
+      followers: 0,
+      following: 0,
+    });
 
   const fetchFollowCounts = () => {
     axios.get("/follow/counts").then((res) => setFollowCounts(res.data));
