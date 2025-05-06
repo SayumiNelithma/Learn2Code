@@ -1,12 +1,25 @@
 
-import React from 'react'
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
+import { toast } from 'react-toastify';
 
-const OAuthSuccess = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export default function OAuthSuccess() {
+  const [params] = useSearchParams();
+  const token = params.get('token');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      login(token);
+      toast.success('Logged in with Google');
+      navigate('/');
+    } else {
+      toast.error('Login failed');
+      navigate('/signin');
+    }
+  }, [token]);
+
+  return null;
 }
-
-export default OAuthSuccess
