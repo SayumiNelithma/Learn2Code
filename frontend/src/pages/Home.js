@@ -80,6 +80,19 @@ export default function InstagramHomeFeed() {
     });
   };
 
+  const handleCommentSubmit = (postId) => {
+    const content = newCommentText[postId];
+    if (!content) return;
+
+    axios.post(`/comments/${postId}`, { content }).then((res) => {
+      setComments((prev) => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), res.data],
+      }));
+      setNewCommentText((prev) => ({ ...prev, [postId]: "" }));
+    });
+  };
+
   return (
     <Box>
       <Leftsidebar />
