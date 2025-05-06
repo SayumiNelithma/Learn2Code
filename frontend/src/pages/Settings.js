@@ -48,6 +48,40 @@ export default function Settings() {
     }
   }, [user]);
 
+  const handleUpdate = async () => {
+    if (!form.username || !form.email) {
+      toast.error("Username and email are required");
+      return;
+    }
+    if (form.password && form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("username", form.username);
+    formData.append("email", form.email);
+    if (form.password) formData.append("password", form.password);
+    if (form.profileImage) formData.append("file", form.profileImage);
+
+    try {
+      await axios.put("/auth/update-profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Profile updated successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Update failed");
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm({ ...form, profileImage: file });
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Paper
