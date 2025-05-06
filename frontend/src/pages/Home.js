@@ -41,6 +41,24 @@ import RightSidebar from "../components/homepage/Rightsidebar";
 import RenderStatusBar from "../components/homepage/RenderStatusBar";
 
 export default function InstagramHomeFeed() {
+  const [comments, setComments] = useState({});
+  const [newCommentText, setNewCommentText] = useState({});
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [likeStatus, setLikeStatus] = useState({});
+  const [allUsers, setAllUsers] = useState([]);
+  const [followStatus, setFollowStatus] = useState({});
+  const [activeTab, setActiveTab] = useState("following");
+  const BASE_URL = "http://localhost:9090";
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [statuses, setStatuses] = useState([]);
+  const [openStatus, setOpenStatus] = useState(null);
+  const handleOpenStatus = (status) => setOpenStatus(status);
+  const handleCloseStatus = () => setOpenStatus(null);
+  const [editingStatus, setEditingStatus] = useState(null);
+
   useEffect(() => {
     loadPosts();
   }, [activeTab]);
@@ -154,12 +172,27 @@ export default function InstagramHomeFeed() {
     axios.delete(`/status/${id}`).then(() => loadStatuses());
   };
 
-
-
   return (
-    <Box>
-      <Leftsidebar />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        minHeight: "100vh",
+      }}
+    >
+      <StatusViewer
+        status={editingStatus || openStatus}
+        onClose={() => {
+          setOpenStatus(null);
+          setEditingStatus(null);
+        }}
+        duration={5000}
+        refreshStatuses={loadStatuses}
+        isEditing={!!editingStatus}
+      />
 
+      {/* Left Sidebar */}
+      <Leftsidebar />
       {/* Main Content */}
       <Box
         sx={{ flex: 1, maxWidth: 950, mx: "auto", my: 2, p: 2, width: "100%" }}
@@ -458,6 +491,7 @@ export default function InstagramHomeFeed() {
         </Box>
       </Box>
 
+      {/* Right Sidebar */}
       <RightSidebar
         user={user}
         allUsers={allUsers}
