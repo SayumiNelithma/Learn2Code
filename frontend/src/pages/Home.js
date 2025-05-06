@@ -1,8 +1,85 @@
-import React from "react";
-import Leftsidebar from "../components/homepage/Leftsidebar";
-import RightSidebar from "../components/homepage/Rightsidebar";
+import { useEffect, useState } from "react";
+import axios from "../api/axiosConfig";
+import { useAuth } from "../auth/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+  Box,
+  Button,
+  Divider,
+} from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Delete,
+  Edit,
+  Favorite,
+  FavoriteBorder,
+  Home,
+  Search,
+  Explore,
+  MovieCreation,
+  Chat,
+  AddBox,
+  Person,
+  Notifications,
+} from "@mui/icons-material";
+import "swiper/css";
 
-const Home = () => {
+import Leftsidebar from "../components/homepage/Leftsidebar";
+import StatusViewer from "../components/homepage/StatusViewer";
+import RightSidebar from "../components/homepage/Rightsidebar";
+import RenderStatusBar from "../components/homepage/RenderStatusBar";
+
+export default function InstagramHomeFeed() {
+  useEffect(() => {
+    loadPosts();
+  }, [activeTab]);
+
+  const loadPosts = () => {
+    const endpoint =
+      activeTab === "all"
+        ? "/posts/all"
+        : activeTab === "my"
+        ? "/posts/my"
+        : "/posts/following";
+
+    axios.get(endpoint).then((res) => {
+      setPosts(res.data);
+      res.data.forEach((post) => {
+        axios.get(`/comments/${post.id}`).then((res) => {
+          setComments((prev) => ({ ...prev, [post.id]: res.data }));
+        });
+        axios.get(`/posts/${post.id}/like-status`).then((res) => {
+          setLikeStatus((prev) => ({ ...prev, [post.id]: res.data }));
+        });
+      });
+    });
+
+    axios.get("/users/all").then((res) => {
+      setAllUsers(res.data);
+      res.data.forEach((u) => {
+        if (u.email !== user?.email) {
+          axios.get(`/follow/status/${u.id}`).then((statusRes) => {
+            setFollowStatus((prev) => ({
+              ...prev,
+              [u.id]: statusRes.data.status,
+            }));
+          });
+        }
+      });
+    });
+  };
+
   return (
     <Box>
       <Leftsidebar />
@@ -314,6 +391,4 @@ const Home = () => {
       />
     </Box>
   );
-};
-
-export default Home;
+}
