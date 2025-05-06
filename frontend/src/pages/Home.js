@@ -122,6 +122,14 @@ export default function InstagramHomeFeed() {
       });
   };
 
+  const toggleLike = (postId) => {
+    axios.post(`/posts/${postId}/like`).then(() => {
+      axios.get(`/posts/${postId}/like-status`).then((res) => {
+        setLikeStatus((prev) => ({ ...prev, [postId]: res.data }));
+      });
+    });
+  };
+
   return (
     <Box>
       <Leftsidebar />
