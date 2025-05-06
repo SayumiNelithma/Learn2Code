@@ -142,6 +142,18 @@ export default function InstagramHomeFeed() {
     });
   };
 
+  useEffect(() => {
+    loadStatuses();
+  }, []);
+
+  const loadStatuses = () => {
+    axios.get("/status").then((res) => setStatuses(res.data));
+  };
+
+  const handleDeleteStatus = (id) => {
+    axios.delete(`/status/${id}`).then(() => loadStatuses());
+  };
+
 
 
   return (
