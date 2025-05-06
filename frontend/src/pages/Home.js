@@ -102,6 +102,26 @@ export default function InstagramHomeFeed() {
     });
   };
 
+  const handleEdit = (comment) => {
+    setEditCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleSaveEdit = (commentId, postId) => {
+    axios
+      .put(`/comments/${commentId}`, { content: editContent })
+      .then((res) => {
+        setComments((prev) => ({
+          ...prev,
+          [postId]: prev[postId].map((c) =>
+            c.id === commentId ? res.data : c
+          ),
+        }));
+        setEditCommentId(null);
+        setEditContent("");
+      });
+  };
+
   return (
     <Box>
       <Leftsidebar />
