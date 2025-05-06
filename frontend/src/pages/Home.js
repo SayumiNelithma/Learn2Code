@@ -130,6 +130,20 @@ export default function InstagramHomeFeed() {
     });
   };
 
+  const handleFollowRequest = (userId) => {
+    axios.post(`/follow/${userId}`).then(() => {
+      setFollowStatus((prev) => ({ ...prev, [userId]: "PENDING" }));
+    });
+  };
+
+  const handleUnfollow = (userId) => {
+    axios.delete(`/follow/${userId}`).then(() => {
+      setFollowStatus((prev) => ({ ...prev, [userId]: "NONE" }));
+    });
+  };
+
+
+
   return (
     <Box>
       <Leftsidebar />
