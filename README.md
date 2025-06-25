@@ -17,13 +17,13 @@ Learn2Code is a modern web-based platform designed for sharing skills, learning,
 
     Backend: Spring Boot (Java)
 
-    Database: MySQL / PostgreSQL
+    Database: MySQL
 
-    Auth: JWT (JSON Web Tokens)
+    Auth: OAuth 2.0
 
     API: RESTful APIs
 
-    Frontend: Compatible with React, Angular, or Vue
+    Frontend: React.js
 
     Tools: Git, GitHub
 
