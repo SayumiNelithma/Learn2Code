@@ -64,3 +64,14 @@ For full documentation, refer to the docs/ folder (if included).
     Use meaningful commit messages.
 
     Follow clean code practices.
+
+📜 License
+
+This project is licensed under the MIT License.
+📬 Contact
+
+    GitHub: @Sayumi
+
+    Email: sayuminelithma@gmail.com
+
+
