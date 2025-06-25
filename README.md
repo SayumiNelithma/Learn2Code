@@ -1,6 +1,6 @@
-🚀 Lear2Code
+🚀 Learn2Code
 
-Lear2Code is a modern web-based platform designed for sharing skills, learning, and connecting with peers. It combines features of social media with course management, ideal for learners, educators, and professionals.
+Learn2Code is a modern web-based platform designed for sharing skills, learning, and connecting with peers. It combines features of social media with course management, ideal for learners, educators, and professionals.
 🔑 Core Features
 
     User Authentication – Secure registration & login with role-based access.
